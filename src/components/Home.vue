@@ -1,23 +1,25 @@
 <template>
-
+  <h1 class="h1_description_menu">Mi Perfil</h1>
+  
   <div class="information">
-    <h1>
-      ¡Bienvenido
-      <span>{{ userDetailById.name }}</span
-      >!
-    </h1>
-
+    <div class="lol"><h1 class="h1_description_menu">Información Personal:</h1></div>
+    
     <div class="details">
-      <h3>Su información es la siguiente</h3>
-
+      <h2>
+        Nombre:
+        <span>{{ userDetailById.name }}</span>
+      </h2>
       <h2>
         Nombre de usuario:
         <span>{{ userDetailById.username }}</span>
       </h2>
-
       <h2>
         Correo electrónico:
         <span>{{ userDetailById.email }}</span>
+      </h2>
+      <h2>
+        Dirección:
+        <span>{{ userDetailById.address }}</span>
       </h2>
     </div>
   </div>
@@ -38,6 +40,8 @@ export default {
       userDetailById: {
         username: "",
         name: "",
+        address:"",
+        phone:"",
         email: "",
       },
     };
@@ -51,6 +55,8 @@ export default {
             username
             name
             email
+            phone
+            address
           }
         }
       `,
@@ -66,49 +72,83 @@ export default {
 
 
 <style>
+.information{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap:5%;
+  margin-bottom: 160px;
+}
+.details{
+background-color: #9C2713;
+border-radius: 10px;
+margin-top: 80px;
+padding:15px;
+box-shadow: 6px 6px 6px #888888;
+}
+.details h2{
+  font-size: 30px;
+  padding: 15px;
+  color:white;
+}
+.lol{
 
-.information {
-  margin: 0;
-  padding: 0%;
-  width: 100%;
-  height: 100%;
+}
+.lol h1{
+  font-weight: bold;
+  font-size: 40px;
+}
 
+
+@media (max-width: 360px) {
+  .information{
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap:5%;
+  margin-bottom: 160px;
+}
+.details h2{
+  font-size: 20px;
+  padding: 15px;
+  color:white;
+}
+.details{
+width: 70%;
+}
+}
+@media (max-width: 576px) {
+  .information{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap:5%;
+  margin-bottom: 160px;
+}
+.details{
+width: 70%;
+}
+.details h2{
+  font-size: 20px;
+  padding: 15px;
+  color:white;
+}
 }
 
-.information h1 {
-  font-size: 60px;
-  color: #283747;
+@media (max-width: 768px) {
+  .information{
+  margin-right: 10%;
+  margin-left: 10%;
 }
 
-.information h2 {
-  font-size: 40px;
-  color: #283747;
+}
+@media (max-width: 1024px) {
+  .information{
+  margin-right: 10%;
+  margin-left: 10%;
 }
 
-.information span {
-  color: crimson;
-  font-weight: bold;
 }
-
-.details h3 {
-  font-size: 35px;
-  color: #283747;
-  text-align: center;
-}
-
-.details h2 {
-  font-size: 35px;
-  color: #283747;
-}
-.details {
-  border: 3px solid rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
-  padding: 30px 80px;
-  margin: 30px 0 0 0;
-}
-
 </style>

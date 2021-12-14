@@ -1,15 +1,21 @@
 import gql from "graphql-tag";
 import { createRouter, createWebHistory } from "vue-router";
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
-
+import Cards from './components/Cards.vue'
 import LogIn from './components/LogIn.vue'
 import SignUp from './components/SignUp.vue'
 import Home from './components/Home.vue'
-import Account from './components/Account.vue'
-import Transaction from './components/Transaction.vue'
+import Dish from './components/Dish.vue'
 import Delivery from './components/Delivery.vue'
 
-const routes = [{
+const routes = [
+    {
+        path: '/',
+        name: 'App',
+        component: Cards,
+        meta: { requiresAuth: false }
+    },
+    {
         path: '/user/logIn',
         name: "logIn",
         component: LogIn,
@@ -28,15 +34,9 @@ const routes = [{
         meta: { requiresAuth: true }
     },
     {
-        path: '/user/account',
-        name: "account",
-        component: Account,
-        meta: { requiresAuth: true }
-    },
-    {
-        path: '/user/transaction',
-        name: "transaction",
-        component: Transaction,
+        path: '/admin/dish',
+        name: "dish",
+        component: Dish,
         meta: { requiresAuth: true }
     },
     {
@@ -90,7 +90,7 @@ router.beforeEach(async(to, from) => {
 
     if (is_auth == to.meta.requiresAuth) return true
     if (is_auth) return { name: "home" };
-    return { name: "logIn" };
+    return { name: "App" };
 })
 
 export default router;

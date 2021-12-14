@@ -1,18 +1,18 @@
 <template>
     <div class="container-card">
-        <div class="card" v-for="(dish,k) in dishes_data" :key="k">
+        <div class="card" v-for="(plato,k) in listPlatos" :key="k">
             <div class="in-card-container">
-                <img class="card-img" :src="dish.url" alt="img">
+                <img class="card-img" :src="plato.url_img" alt="img">
                 <div class="card-body">
-                    <h2 class="h2_description_menu">{{ dish.name }}</h2>
-                    <ul class="description_title"> Texto Texto Texto Texto</ul>
-                     <ul> $$$$$ </ul>
+                    <h2 class="h2_description_menu">{{ plato.name_plato }}</h2>
+                    <ul class="description_title"> {{ plato.desc_plato }}</ul>
+                    <ul> {{ plato.price }} </ul>
                 </div>
                 <dir class="card-buttons">
-                    <button class="big-card-button" v-if="dish.amount==0" @click="plusButton(k)">Agregar</button>
-                    <button class="small-card-button" v-if="!dish.amount==0" @click="minusButton(k)">-</button>
-                    <ul class="card-add-status" v-if="!dish.amount==0"> {{ dish.amount }} </ul>
-                    <button class="small-card-button" v-if="!dish.amount==0" @click="plusButton(k)">+</button>
+                    <button class="big-card-button" v-if="this.enumeration[k]==0" @click="plusButton(k)">Agregar</button>
+                    <button class="small-card-button" v-if="!this.enumeration[k]==0" @click="minusButton(k)">-</button>
+                    <ul class="card-add-status" v-if="!this.enumeration[k]==0"> {{ this.enumeration[k] }} </ul>
+                    <button class="small-card-button" v-if="!this.enumeration[k]==0" @click="plusButton(k)">+</button>
                 </dir>
             </div>
         </div>
@@ -31,13 +31,31 @@
                 <span class="close" @click="closeModal()">&times;</span>
                 <h2>Carrito de Compras</h2>
             </div>
-            <div class="modal-body">
-                <p>Some text in the Modal Body</p>
-                <p>Some other text...</p>
+            <div v-if="total==0">
+                <h1>Agregue Productos al Carrito</h1>    
+            </div> 
+            <div v-if="total!=0" class="modal-body">
+                <div class="modal-cards" v-for="(n,k) in enumeration" :key=k>
+                    <!-- <div V-if="">X</div> -->
+                    <div v-if="!n==0">
+                        <img class="card-img" :src="listPlatos[k].url_img" alt="img">
+                    </div>
+                    <div class="card-body" v-if="!n==0">
+                        <h4> {{ this.listPlatos[k].name_plato }} </h4>
+                        <ul> Precio unitario: ${{ this.listPlatos[k].price }} </ul>
+                        <h3> ${{ this.listPlatos[k].price * n }} </h3>
+                    </div>
+                    <div class="card-buttons" v-if="!n==0">
+                        <button class="small-card-button" v-if="!this.enumeration[k]==0" @click="minusButton(k)">-</button>
+                        <ul class="card-add-status" v-if="!this.enumeration[k]==0"> {{ this.enumeration[k] }} </ul>
+                        <button class="small-card-button" v-if="!this.enumeration[k]==0" @click="plusButton(k)">+</button>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button @click="closeModal()">Continuar Comprando</button>
-                <button>Comprar</button>
+                <h2>Total de la compra: {{ total }}</h2>
+                <button @click="closeModal()">Seguir Comprando</button>
+                <button @click="processSales()">Comprar</button>
             </div>
         </div>
 
@@ -46,82 +64,135 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 
 export default {
-  name: "Delivery",
+    name: "Delivery",
 
-  data: function(){
-      return {
-          dishes_data: [{
-              name: "hamburguesa",
-              amount: 0,
-              url: "https://media.istockphoto.com/photos/juicy-hamburger-on-white-background-picture-id1206323282?k=20&m=1206323282&s=612x612&w=0&h=yatlq6BHRCCvoTzFZLSwaJc0O8Quct_tRPWtH0dj9Fc="
-          },
-          {
-              name: "perro",
-              amount: 0,
-              url: "https://media.istockphoto.com/photos/juicy-hamburger-on-white-background-picture-id1206323282?k=20&m=1206323282&s=612x612&w=0&h=yatlq6BHRCCvoTzFZLSwaJc0O8Quct_tRPWtH0dj9Fc="
-          },
-          {
-              name: "hamburguesa",
-              amount: 0,
-              url: "https://media.istockphoto.com/photos/juicy-hamburger-on-white-background-picture-id1206323282?k=20&m=1206323282&s=612x612&w=0&h=yatlq6BHRCCvoTzFZLSwaJc0O8Quct_tRPWtH0dj9Fc="
-          },
-          {
-              name: "perro",
-              amount: 0,
-              url: "https://media.istockphoto.com/photos/juicy-hamburger-on-white-background-picture-id1206323282?k=20&m=1206323282&s=612x612&w=0&h=yatlq6BHRCCvoTzFZLSwaJc0O8Quct_tRPWtH0dj9Fc="
-          },
-          {
-              name: "hamburguesa",
-              amount: 0,
-              url: "https://media.istockphoto.com/photos/juicy-hamburger-on-white-background-picture-id1206323282?k=20&m=1206323282&s=612x612&w=0&h=yatlq6BHRCCvoTzFZLSwaJc0O8Quct_tRPWtH0dj9Fc="
-          },
-          {
-              name: "perro",
-              amount: 0,
-              url: "https://media.istockphoto.com/photos/juicy-hamburger-on-white-background-picture-id1206323282?k=20&m=1206323282&s=612x612&w=0&h=yatlq6BHRCCvoTzFZLSwaJc0O8Quct_tRPWtH0dj9Fc="
-          },
-          {
-              name: "hamburguesa",
-              amount: 0,
-              url: "https://media.istockphoto.com/photos/juicy-hamburger-on-white-background-picture-id1206323282?k=20&m=1206323282&s=612x612&w=0&h=yatlq6BHRCCvoTzFZLSwaJc0O8Quct_tRPWtH0dj9Fc="
-          },
-          {
-              name: "perro",
-              amount: 0,
-              url: "https://media.istockphoto.com/photos/juicy-hamburger-on-white-background-picture-id1206323282?k=20&m=1206323282&s=612x612&w=0&h=yatlq6BHRCCvoTzFZLSwaJc0O8Quct_tRPWtH0dj9Fc="
-          },
-          {
-              name: "hamburguesa",
-              amount: 0,
-              url: "https://media.istockphoto.com/photos/juicy-hamburger-on-white-background-picture-id1206323282?k=20&m=1206323282&s=612x612&w=0&h=yatlq6BHRCCvoTzFZLSwaJc0O8Quct_tRPWtH0dj9Fc="
-          },
-          {
-              name: "perro",
-              amount: 0,
-              url: "https://media.istockphoto.com/photos/juicy-hamburger-on-white-background-picture-id1206323282?k=20&m=1206323282&s=612x612&w=0&h=yatlq6BHRCCvoTzFZLSwaJc0O8Quct_tRPWtH0dj9Fc="
-          }],
-          show_modal: false,
-      }
-  },
+    data: function(){
+        return {
+            enumeration: [],
+            total: 0,
+            listPlatos: [],
+            show_modal: false,
+            infoVenta:[],
+        }
+    },
 
-  methods: {
-    plusButton: function (key) {
-        this.dishes_data[key].amount += 1;
+    methods: {
+
+        plusButton: function (key) {
+            this.enumeration[key] += 1;
+            this.total += this.listPlatos[key].price;
+        },
+
+        minusButton: function (key) {
+            this.enumeration[key] -= 1; 
+            this.total -= this.listPlatos[key].price;   
+        },
+
+        closeModal: function () {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        },
+
+        openModal: function () {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "block";
+        },
+
+        enumerationData: function () {
+            for (let i=0; i < this.listPlatos.length; i ++) {
+                    this.enumeration.push(0);
+            }
+        },
+
+        infoVentaFillData: function () {
+            this.infoVenta = [];
+            for (let i=0; i < this.listPlatos.length; i ++) {
+                if (this.enumeration[i] != 0){
+                    this.infoVenta.push({id:this.listPlatos[i].id,amount:this.enumeration[i]});
+                }
+            }
+        },
+
+        processSales: async function () {
+            
+            this.infoVentaFillData();
+            
+            if (localStorage.getItem("token_access")  === null ||
+                localStorage.getItem("token_refresh") === null ) {
+                this.$emit("logOut");
+                return;
+            }
+                
+            localStorage.setItem("token_access", "");
+            
+            await this.$apollo
+                .mutate({
+                    mutation: gql`
+                        mutation ($refresh: String!) {
+                            refreshToken(refresh: $refresh) {
+                                access
+                            }
+                        }
+                    `,
+                    variables: {
+                        refresh: localStorage.getItem("token_refresh"),
+                    },
+                })
+                .then((result) => {                    
+                    localStorage.setItem("token_access", result.data.refreshToken.access);
+                    //alert("funcionó la autenticación");
+                })
+                .catch((error) => {
+                    //alert("Falló la autenticación");
+                    this.$emit("logOut");
+                    return;
+                });
+
+            await this.$apollo
+                .mutate({
+                    mutation: gql`
+                        mutation ($infoVenta: [NewVentaInput!]!) {
+                            createNewVenta(infoVenta: $infoVenta) {
+                                id
+                            }
+                        }
+                    `,
+                    variables:{
+                        infoVenta: this.infoVenta,
+                    },
+                })
+                .then((result) => {                   
+                    alert("Transacción Realizada de Manera Exitosa");
+                })
+                .catch((error) => {
+                    alert("Algo falló");
+                });
+        }, 
     },
-    minusButton: function (key) {
-        this.dishes_data[key].amount -= 1;    
+
+    apollo: {
+        listPlatos: {
+        query: gql`
+            query  {
+            listPlatos {
+                id
+                name_plato
+                desc_plato
+                price
+                url_img
+                amount
+                }
+            }
+        `,
+        }
     },
-    closeModal() {
-        var modal = document.getElementById("myModal");
-        modal.style.display = "none";
-    },
-    openModal() {
-        var modal = document.getElementById("myModal");
-        modal.style.display = "block";
+
+    created: async function () {
+        this.$apollo.queries.listPlatos.refetch().then(()=> {this.enumerationData()});
     }
-},
 };
 
 </script>
@@ -172,6 +243,7 @@ img {
     flex-direction: row;
     justify-content: space-around;
     align-content: stretch;
+    align-items: center;
 }
 
 .big-card-button {
@@ -182,6 +254,12 @@ img {
     margin-right: 15%;
     margin-left: 15%;
     margin-bottom: 20px;
+}
+
+.card-add-status {
+    margin: 0 30px 0 30px;
+    padding: 0 0 0 0;
+    text-align: center;
 }
 
 /*
@@ -199,51 +277,61 @@ Floating button
 	text-align:center;
 }
 
-/* 
-The Modal (background) 
-*/
+
+
+
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none;  
+    position: fixed; 
+    z-index: 1; 
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    width: 100%; 
+    height: 100%;
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+    
 }
 
-/* Modal Header */
+/* Modal Header 
 .modal-header {
     padding: 6px 16px;
-    background-color: #9c2713;
     color: white;
 }
+*/
 
-/* Modal Body */
+/* Modal Body 
 .modal-body {
+    display: flex;
+    flex-direction: column;
     padding: 2px 16px;
+    
 }
-
-/* Modal Footer */
+*/
+/*
+.modal-cards {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+*/
+/* Modal Footer 
 .modal-footer {
     padding: 2px 16px;
-    background-color: #9c2713;
     color: white;
 }
 
-
-/* Modal Content/Box */
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    /* padding: 20px; */
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+*/
+/* Modal Content/Box 
+    background-color: #9C2713;
+    margin: 10% auto; 
+    /* padding: 20px; 
+    border: none;
+    width: 60%; 
+    height:60%;
     position: relative;
-    /* margin: auto; */
+    border-radius: 10px; 
     padding: 0;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     animation-name: animatetop;
@@ -258,7 +346,7 @@ The Modal (background)
 
 /* The Close Button */
 .close {
-    color: #aaa;
+    color: white;
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -266,7 +354,7 @@ The Modal (background)
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: rgb(226, 226, 226);
     text-decoration: none;
     cursor: pointer;
 }

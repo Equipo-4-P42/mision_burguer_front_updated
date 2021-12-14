@@ -1,34 +1,61 @@
 <template>
-
-    <div class="signUp_user">
-        <div class="container_signUp_user">
-            <h2>Registrarse</h2>
-
-            <form v-on:submit.prevent="processSignUp" >
-                <input type="text" v-model="user.username" placeholder="Usuario">
-                <br>
-                
-                <input type="password" v-model="user.password" placeholder="Contraseña">
-                <br>
-                
-                <input type="text" v-model="user.name" placeholder="Nombre">
-                <br>
-
-                <input type="email" v-model="user.email" placeholder="Correo">
-                <br>
-
-                <input type="text" v-model="user.address" placeholder="Dirección">
-                <br>
-                
-                <input type="text" v-model="user.phone" placeholder="Teléfono">
-                <br>
-   
-                <button type="submit">Registrarse</button>
-            </form>
-        </div>
-
+  <h1 class="h1_description_menu">Registro de Usuario</h1>
+  <div class="register-box-container">
+    <div class="register-boxx">
+      <form v-on:submit.prevent="processSignUp">
+        <!--username-->
+        <label class="login-label" for="name">Nombre</label>
+        <input
+          name="name"
+          type="text"
+          v-model="user.name"
+          placeholder="Digite Nombre "
+        />
+        <!--username-->
+        <label class="login-label" for="direction">Dirección</label>
+        <input
+          name="direction"
+          type="text"
+          v-model="user.address"
+          placeholder="Digite Dirección "
+        />
+        <!--username-->
+        <label class="login-label" for="telephone">Teléfono</label>
+        <input
+          name="telephone"
+          type="text"
+          v-model="user.phone"
+          placeholder="Digite Teléfono "
+        />
+        <!--username-->
+        <label class="login-label" for="email">Correo Electrónico</label>
+        <input
+          name="email"
+          type="email"
+          v-model="user.email"
+          placeholder="Digite Correo "
+        />
+        <!--username-->
+        <label class="login-label" for="user">Usuario</label>
+        <input
+          name="user"
+          type="text"
+          v-model="user.username"
+          placeholder="Digite Usuario "
+        />
+        <!--password-->
+        <label class="password-label" for="password ">Contraseña</label>
+        <input
+          name="password"
+          type="password"
+          v-model="user.password"
+          placeholder="Digite Contraseña"
+        />
+        <!--Botón-->
+        <input type="submit" value="REGISTRARSE" />
+      </form>
     </div>
-
+  </div>
 </template>
 
 
@@ -36,27 +63,27 @@
 import gql from "graphql-tag";
 
 export default {
-    name: "SignUp",
+  name: "SignUp",
 
-    data: function() {
-        return {
-        user: {
-            username: "",
-            password: "",
-            name: "",
-            email: "",
-            address: "",
-            phone: "",
-        },
-        };
-    },
+  data: function () {
+    return {
+      user: {
+        username: "",
+        password: "",
+        name: "",
+        email: "",
+        address: "",
+        phone: "",
+      },
+    };
+  },
 
   methods: {
-    processSignUp: async function() {
+    processSignUp: async function () {
       await this.$apollo
         .mutate({
           mutation: gql`
-            mutation($userInput: SignUpInput!) {
+            mutation ($userInput: SignUpInput!) {
               signUpUser(userInput: $userInput) {
                 refresh
                 access
@@ -80,75 +107,35 @@ export default {
           alert("ERROR: Fallo en el registro.");
         });
     },
-
   },
-}
+};
 </script>
 
 
 <style>
+/* INICIO CSS REGISTRO */
+.register-box-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.register-boxx {
+  display: flex;
+  margin-top: 2%;
+  margin-bottom: 4%;
+  justify-content: center;
+  width: 300px;
+}
 
-    .signUp_user{
-        margin: 0;
-        padding: 0%;
-        height: 100%;
-        width: 100%;
-    
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+.register-boxx form {
+  display: flex;
 
-    .container_signUp_user {
-        border: 3px solid  #283747;
-        border-radius: 10px;
-        width: 25%;
-        height: 60%;
-        
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .signUp_user h2{
-        color: #283747;
-
-    }
-
-    .signUp_user form{
-        width: 70%;
-        
-    }
-
-    .signUp_user input{
-        height: 40px;
-        width: 100%;
-
-        box-sizing: border-box;
-        padding: 10px 20px;
-        margin: 5px 0;
-
-        border: 1px solid #283747;
-    }
-
-    .signUp_user button{
-        width: 100%;
-        height: 40px;
-
-        color: #E5E7E9;
-        background: #283747;
-        border: 1px solid #E5E7E9;
-
-        border-radius: 5px;
-        padding: 10px 25px;
-        margin: 5px 0 25px 0;
-    }
-
-    .signUp_user button:hover{
-        color: #E5E7E9;
-        background: crimson;
-        border: 1px solid #283747;
-    }
-
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border-radius: 10px;
+  background-color: #9c2713;
+}
+/* FIN CSS REGISTRO */
 </style>
